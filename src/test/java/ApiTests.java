@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Random;
 
@@ -21,8 +22,9 @@ public class ApiTests {
 
         System.out.println("Preparing test data...");
 
+        BigInteger myID = new BigInteger("2");
         Pet petToAdd = Pet.builder()
-                .id(new Random().nextInt(3))
+                .id(myID)
                 .category(cats)
                 .name("Sherlock")
                 .photoUrls(Collections.singletonList("urls"))
@@ -44,7 +46,7 @@ public class ApiTests {
 
         System.out.println("Preparing for GET request by ID...");
 
-        long id = petToAdd.getId();
+        BigInteger id = petToAdd.getId();
 
         Response getPetInfo = given()
                 .baseUri(BASE_URL)
@@ -83,7 +85,6 @@ public class ApiTests {
                 .body(userToReg)
                 .when()
                 .post();
-
         System.out.println("Response: " + addUser.asString());
 
       //  User addedUserResponse = addUser.as(User.class);
@@ -91,13 +92,11 @@ public class ApiTests {
         Assert.assertEquals("User not created", 200, addUser.getStatusCode());
 
         System.out.println("Preparing for GET request by username...");
-
         Response getEmail = given()
                 .baseUri(BASE_URL)
                 .pathParam("username", "Juli145")
                 .when()
                 .get("/user/{username}");
-
         System.out.println("Response GET: " + getEmail.asString());
 
         User gotUserResponse = getEmail.as(User.class);
